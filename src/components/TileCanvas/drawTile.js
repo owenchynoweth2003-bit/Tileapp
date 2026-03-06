@@ -6,11 +6,17 @@ export function drawTile(ctx, t, tile, gs, cL, cR, cT, cB, sc) {
   if (t.t === 'r') {
     const px = t.x * sc, py = t.y * sc, pw = t.w * sc, ph = t.h * sc;
     if (px + pw < cL - bleed || px > cR + bleed || py + ph < cT - bleed || py > cB + bleed) return;
-    ctx.fillStyle = t.c; ctx.globalAlpha = 0.92; ctx.fillRect(px, py, pw - gs, ph - gs);
-    ctx.globalAlpha = 0.06; ctx.fillStyle = '#fff'; ctx.fillRect(px, py, pw - gs, Math.max(1, ph * 0.018));
-    ctx.fillStyle = '#000'; ctx.globalAlpha = 0.06; ctx.fillRect(px, py + ph - gs - 1, pw - gs, 1);
-    ctx.fillStyle = '#fff'; ctx.globalAlpha = 0.02; ctx.fillRect(px, py, 0.8, ph - gs);
-    if (tile.type === 'marble' && pw > 6) {
+    
+    if (tile.img) {
+      ctx.drawImage(tile.img, px, py, pw - gs, ph - gs);
+    } else {
+      ctx.fillStyle = t.c; ctx.globalAlpha = 0.92; ctx.fillRect(px, py, pw - gs, ph - gs);
+      ctx.globalAlpha = 0.06; ctx.fillStyle = '#fff'; ctx.fillRect(px, py, pw - gs, Math.max(1, ph * 0.018));
+      ctx.fillStyle = '#000'; ctx.globalAlpha = 0.06; ctx.fillRect(px, py + ph - gs - 1, pw - gs, 1);
+      ctx.fillStyle = '#fff'; ctx.globalAlpha = 0.02; ctx.fillRect(px, py, 0.8, ph - gs);
+    }
+    
+    if (!tile.img && tile.type === 'marble' && pw > 6) {
       ctx.globalAlpha = 0.04; ctx.strokeStyle = tile.accent; ctx.lineWidth = 0.5;
       const sd = Math.abs(Math.round(t.x * 7 + t.y * 11)) % 10;
       ctx.beginPath(); ctx.moveTo(px + sd * 0.4, py + ph * 0.15);

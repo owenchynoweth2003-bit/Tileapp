@@ -8,7 +8,7 @@ import { generateTiles } from '../../solver/generateTiles.js';
 import { FEAT_TYPES } from '../../domain/features.js';
 import { invalidateCache } from './textureCache.js';
 
-const SCALE = 10; // pixels per inch for texture resolution
+const SCALE = 40; // pixels per inch for texture resolution
 
 function paintWallTexture(cv, wall, sec, allTiles, tile, grout, groutColor, maxH) {
   const ctx = cv.getContext('2d');

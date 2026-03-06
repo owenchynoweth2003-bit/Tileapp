@@ -31,6 +31,7 @@ export default function TileCanvas({ walls, aw, tile, grout, groutColor, pat, fe
     const dpr = window.devicePixelRatio || 1;
     cv.width = Math.floor(CW * dpr); cv.height = Math.floor(CH * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.translate(0.5, 0.5); // <--- ADD THIS LINE FOR CRISP LINES
 
     const pad = 72, VGAP = wrap && walls.length > 1 ? 10 : 0, tgp = VGAP * Math.max(0, sections.length - 1);
     const baseSc = Math.min((CW - pad * 2 - tgp) / Math.max(1, totalTW), (CH - pad * 2) / maxH);
@@ -152,8 +153,8 @@ export default function TileCanvas({ walls, aw, tile, grout, groutColor, pat, fe
         };
 
         if (!isCustSec) {
-          if (lc > 0.01) edgeLabel(lc, mcwV, 0, sh2 * 0.33, 'left');
-          if (rc > 0.01) edgeLabel(rc, mcwV, sw2, sh2 * 0.33, 'right');
+          if (lc > 0.01) edgeLabel(lc, mcwV, 0, sh2 * 0.25, 'left'); // Staggered Y position
+          if (rc > 0.01) edgeLabel(rc, mcwV, sw2, sh2 * 0.40, 'right'); // Staggered Y position
           if (tc > 0.01) edgeLabel(tc, mchV, sw2 / 2, -2, 'center');
           if (bc > 0.01) edgeLabel(bc, mchV, sw2 / 2, sh2 + 2, 'center');
         } else {

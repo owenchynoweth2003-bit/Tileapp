@@ -19,6 +19,7 @@ import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts.js';
 import TileCanvas from '../components/TileCanvas/TileCanvas.jsx';
 import Room3D from '../components/Room3D/Room3D.jsx';
 import { SafeView } from '../components/ui/SafeView.jsx';
+import { Stat } from '../components/ui/Stat.jsx';
 
 // Steps
 import SpaceStep from './steps/SpaceStep.jsx';
@@ -28,8 +29,8 @@ import ExportStep from './steps/ExportStep.jsx';
 
 // ─── GLOBAL STYLES ───────────────────────────────────────────────────────────
 const GLOBAL_CSS = `
-  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
-  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'DM Sans', -apple-system, 'SF Pro Display', system-ui, sans-serif; }
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, 'SF Pro Display', 'Helvetica Neue', system-ui, sans-serif; }
   input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
   input[type=number]{-moz-appearance:textfield}
   ::-webkit-scrollbar{width:5px}
@@ -54,12 +55,7 @@ const GLOBAL_CSS = `
   .hud-home:hover { background: #eff6ff; color: #2563eb; border-color: #bfdbfe; }
   input[type="range"] { -webkit-appearance: none; background: #e2e8f0; height: 3px; border-radius: 2px; outline: none; }
   input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #1e293b; border: 2px solid #fff; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,.15); }
-@media print {
-    header, footer, button { display: none !important; }
-    canvas { max-width: 100% !important; height: auto !important; }
-    body { background: white !important; }
-  }
-    `;
+`;
 
 // ─── SHARED STYLE OBJECTS ────────────────────────────────────────────────────
 const S = {
@@ -80,13 +76,7 @@ const Sp = (on) => ({
 // ─── APP ──────────────────────────────────────────────────────────────────────
 export default function App() {
   const [step,         setStep]         = useState(0);
-  const {
-    wallType, setWallType, walls, setWalls, aw, setAw, feats, setFeats,
-    wallPatterns, setWallPatterns, setWallPattern,
-    wallVisible, setWallVisible, toggleWallVisible, isWallVisible,
-    usePerWallPat, setUsePerWallPat, getWallPattern,
-    wallConnection, setWallConnection,
-  } = useSpaceConfig();
+  const { wallType, setWallType, walls, setWalls, aw, setAw, feats, setFeats } = useSpaceConfig();
   const [tile,         setTile]         = useState(CATALOG[0]);
   const [grout,        setGrout]        = useState(0.125);
   const [groutColorId, setGroutColorId] = useState('charcoal');
@@ -109,7 +99,7 @@ export default function App() {
     startTransition(() => {
       setSolverInputs({ walls, tile, pat, grout, mcw, mch, autoSolve, manXOff, manYOff, feats });
     });
-  }, [walls, tile, pat, grout, mcw, mch, autoSolve, manXOff, manYOff, feats, wallConnection]);
+  }, [walls, tile, pat, grout, mcw, mch, autoSolve, manXOff, manYOff, feats]);
 
   const groutColor = useMemo(() => GROUT_COLORS.find(g => g.id === groutColorId)?.color || '#3a3a3a', [groutColorId]);
 
@@ -118,14 +108,13 @@ export default function App() {
     solverInputs.mcw, solverInputs.mch,
     solverInputs.autoSolve ? null : solverInputs.manXOff,
     solverInputs.autoSolve ? null : solverInputs.manYOff,
-    solverInputs.feats,
-    wallConnection
-  ), [solverInputs, wallConnection]);
+    solverInputs.feats
+  ), [solverInputs]);
 
   const ranked = useMemo(() => {
     if (!rankSnapshot) return [];
     return PATTERNS.map(p => {
-      const s = solvePro(rankSnapshot.walls, rankSnapshot.tile, p.id, rankSnapshot.grout, rankSnapshot.mcw, rankSnapshot.mch, null, null, rankSnapshot.feats, wallConnection);
+      const s = solvePro(rankSnapshot.walls, rankSnapshot.tile, p.id, rankSnapshot.grout, rankSnapshot.mcw, rankSnapshot.mch, null, null, rankSnapshot.feats);
       return { ...s.layouts[rankSnapshot.aw] || s.layouts[0], pat: p.id, avgScore: s.avgScore, allMeet: s.allMeet };
     }).sort((a, b) => b.avgScore - a.avgScore);
   }, [rankSnapshot]);
@@ -152,7 +141,8 @@ export default function App() {
   const cur = pro.layouts[aw] || pro.layouts[0];
   const wf = useMemo(() => feats.filter(f => f.wi === aw), [feats, aw]);
   const totalArea = useMemo(() => walls.reduce((s, w) => s + wallArea(w), 0), [walls]);
-    const totT = pro.layouts.reduce((s, l) => s + l.tiles, 0);
+  const tileCost = useMemo(() => (pro.layouts.reduce((s, l) => s + l.tiles, 0) * (tile.price || 5)).toFixed(0), [pro, tile]);
+  const totT = pro.layouts.reduce((s, l) => s + l.tiles, 0);
 
   const clearOffsets = useCallback(() => { setManXOff(null); setManYOff(null); }, []);
 
@@ -289,30 +279,7 @@ export default function App() {
     setStep(2);
     setRankSnapshot({ walls, tile, grout, mcw, mch, feats, aw });
   }, [walls, tile, grout, mcw, mch, feats, aw]);
-const exportPNG = useCallback(() => {
-    const canvas = document.querySelector('canvas');
-    if (!canvas) return;
-    const exportCanvas = document.createElement('canvas');
-    exportCanvas.width = canvas.width;
-    exportCanvas.height = canvas.height;
-    const ctx = exportCanvas.getContext('2d');
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
-    ctx.drawImage(canvas, 0, 0);
-    const link = document.createElement('a');
-    link.download = `tilevision-layout-${Date.now()}.png`;
-    link.href = exportCanvas.toDataURL('image/png');
-    link.click();
-  }, []);
 
-  const export3D = useCallback(() => {
-    const canvas3d = document.querySelector('[style*="cursor: grab"] canvas');
-    if (!canvas3d) return;
-    const link = document.createElement('a');
-    link.download = `tilevision-3d-${Date.now()}.png`;
-    link.href = canvas3d.toDataURL('image/png');
-    link.click();
-  }, []);
   return (
     <div style={{ height: '100vh', background: '#f8f9fb', color: '#1e293b', fontFamily: "'Inter', -apple-system, 'SF Pro Display', 'Helvetica Neue', system-ui, sans-serif", display: 'flex', flexDirection: 'column' }}>
       <style>{GLOBAL_CSS}</style>
@@ -342,82 +309,45 @@ const exportPNG = useCallback(() => {
       </header>
 
       <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
-        {/* ═══ LEFT PANEL ═══ */}
-        <div style={{ width: 272, flexShrink: 0, borderRight: '1px solid #f1f5f9', padding: '14px 14px 32px', overflowY: 'auto', background: '#fff' }}>
+        {/* ═══ SIDEBAR ═══ */}
+        <div style={{ width: 296, flexShrink: 0, borderRight: '1px solid #e5e7eb', padding: '16px 16px 32px', overflowY: 'auto', background: '#fff' }}>
           <div className="ps">
-            {step === 0 && <SpaceStep walls={walls} aw={aw} setAw={setAw} cw={cw} sp={sp} wf={wf} totalArea={totalArea} wallType={wallType} setWallType={setWallType} viewMode={viewMode} setViewMode={setViewMode} pro={pro} updWall={updWall} toggleCustom={toggleCustom} rotateWall={rotateWall} applyShape={applyShape} duplicateWall={duplicateWall} addWall={addWall} deleteWall={deleteWall} moveWall={moveWall} updWallPt={updWallPt} addWallPt={addWallPt} remWallPt={remWallPt} feats={feats} addFeat={addFeat} remFeat={remFeat} updFeat={updFeat} snapF={snapF} setStep={setStep} wallVisible={wallVisible} toggleWallVisible={toggleWallVisible} isWallVisible={isWallVisible} wallConnection={wallConnection} setWallConnection={setWallConnection} wrap={wrap} setWrap={setWrap} S={S} Sp={Sp} />}
+            {step === 0 && <SpaceStep walls={walls} aw={aw} setAw={setAw} cw={cw} sp={sp} wf={wf} totalArea={totalArea} wallType={wallType} setWallType={setWallType} viewMode={viewMode} setViewMode={setViewMode} pro={pro} updWall={updWall} toggleCustom={toggleCustom} rotateWall={rotateWall} applyShape={applyShape} duplicateWall={duplicateWall} addWall={addWall} deleteWall={deleteWall} moveWall={moveWall} updWallPt={updWallPt} addWallPt={addWallPt} remWallPt={remWallPt} feats={feats} addFeat={addFeat} remFeat={remFeat} updFeat={updFeat} snapF={snapF} setStep={setStep} S={S} Sp={Sp} />}
             {step === 1 && <TileStep tile={tile} setTile={setTile} grout={grout} setGrout={setGrout} groutColorId={groutColorId} setGroutColorId={setGroutColorId} mcw={mcw} setMcw={setMcw} mch={mch} setMch={setMch} autoSolve={autoSolve} setAutoSolve={setAutoSolve} manXOff={manXOff} setManXOff={setManXOff} manYOff={manYOff} setManYOff={setManYOff} pro={pro} clearOffsets={clearOffsets} setStep={setStep} goToStep2={goToStep2} S={S} Sp={Sp} />}
-            {step === 2 && <LayoutStep walls={walls} aw={aw} setAw={setAw} pat={pat} setPat={setPat} wrap={wrap} setWrap={setWrap} mcw={mcw} setMcw={setMcw} mch={mch} setMch={setMch} autoSolve={autoSolve} setAutoSolve={setAutoSolve} manXOff={manXOff} setManXOff={setManXOff} manYOff={manYOff} setManYOff={setManYOff} zoom={zoom} setZoom={setZoom} pro={pro} ranked={ranked} rankSnapshot={rankSnapshot} clearOffsets={clearOffsets} setStep={setStep} usePerWallPat={usePerWallPat} setUsePerWallPat={setUsePerWallPat} wallPatterns={wallPatterns} setWallPattern={setWallPattern} S={S} Sp={Sp} />}
-            {step === 3 && <ExportStep walls={walls} feats={feats} tile={tile} pat={pat} grout={grout} groutColorId={groutColorId} mcw={mcw} mch={mch} wrap={wrap} viewMode={viewMode} autoSolve={autoSolve} zoom={zoom} totalArea={totalArea} pro={pro} setWalls={setWalls} setFeats={setFeats} setTile={setTile} setPat={setPat} setGrout={setGrout} setGroutColorId={setGroutColorId} setMcw={setMcw} setMch={setMch} setWrap={setWrap} setViewMode={setViewMode} setAutoSolve={setAutoSolve} setZoom={setZoom} setAw={setAw} setStep={setStep} setManXOff={setManXOff} setManYOff={setManYOff} exportPNG={exportPNG} export3D={export3D} wallConnection={wallConnection} S={S} />}
+            {step === 2 && <LayoutStep walls={walls} aw={aw} setAw={setAw} pat={pat} setPat={setPat} wrap={wrap} setWrap={setWrap} mcw={mcw} setMcw={setMcw} mch={mch} setMch={setMch} autoSolve={autoSolve} setAutoSolve={setAutoSolve} manXOff={manXOff} setManXOff={setManXOff} manYOff={manYOff} setManYOff={setManYOff} zoom={zoom} setZoom={setZoom} pro={pro} ranked={ranked} rankSnapshot={rankSnapshot} clearOffsets={clearOffsets} setStep={setStep} S={S} Sp={Sp} />}
+            {step === 3 && <ExportStep walls={walls} feats={feats} tile={tile} pat={pat} grout={grout} groutColorId={groutColorId} mcw={mcw} mch={mch} wrap={wrap} viewMode={viewMode} autoSolve={autoSolve} zoom={zoom} totalArea={totalArea} pro={pro} setWalls={setWalls} setFeats={setFeats} setTile={setTile} setPat={setPat} setGrout={setGrout} setGroutColorId={setGroutColorId} setMcw={setMcw} setMch={setMch} setWrap={setWrap} setViewMode={setViewMode} setAutoSolve={setAutoSolve} setZoom={setZoom} setAw={setAw} setStep={setStep} setManXOff={setManXOff} setManYOff={setManYOff} S={S} />}
           </div>
         </div>
 
-        {/* ═══ CENTER ═══ */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflowY: 'auto', background: '#f8f9fb' }}>
+        {/* ═══ MAIN CONTENT ═══ */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflowY: 'auto', background: '#f1f5f9' }}>
           <div style={{ padding: '12px 16px 8px', display: 'flex', justifyContent: 'center' }}>
-            <TileCanvas walls={walls} aw={aw} tile={tile} grout={grout} groutColor={groutColor} pat={pat} feats={feats} CW={720} CH={420} onDrag={onDragCb} onDragPt={onDragPt} wrap={wrap && walls.length > 1} zoom={zoom} showMeas={showMeas} pro={pro} isWallVisible={isWallVisible} />
+            <TileCanvas walls={walls} aw={aw} tile={tile} grout={grout} groutColor={groutColor} pat={pat} feats={feats} CW={660} CH={380} onDrag={onDragCb} onDragPt={onDragPt} wrap={wrap && walls.length > 1} zoom={zoom} showMeas={showMeas} pro={pro} />
           </div>
-          <div style={{ padding: '0 16px 12px', flex: 1, minHeight: 260 }}>
+          <div style={{ padding: '0 16px 12px', flex: 1, minHeight: 220 }}>
             <SafeView>
               <Room3D walls={walls} feats={feats} wrap={wrap && walls.length > 1} activeWallIdx={aw} tile={tile} pat={pat} grout={grout} groutColor={groutColor} pro={pro} viewMode={viewMode} />
             </SafeView>
           </div>
         </div>
-
-        {/* ═══ RIGHT PANEL ═══ */}
-        <div style={{ width: 200, flexShrink: 0, borderLeft: '1px solid #f1f5f9', padding: '14px 12px', overflowY: 'auto', background: '#fff' }}>
-          <div style={{ fontSize: 9, color: '#94a3b8', letterSpacing: 1.5, fontWeight: 600, textTransform: 'uppercase', marginBottom: 10 }}>Surfaces</div>
-          {walls.map((w, i) => {
-            const lo = pro.layouts[i];
-            const visible = isWallVisible(i);
-            return (
-              <div key={i} onClick={() => setAw(i)} style={{ padding: '8px 10px', borderRadius: 8, marginBottom: 4, cursor: 'pointer', background: aw === i ? '#f0f4ff' : visible ? '#fff' : '#f8fafc', border: `1px solid ${aw === i ? '#c7d2fe' : '#f1f5f9'}`, opacity: visible ? 1 : 0.5, transition: 'all .15s' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: 11, fontWeight: 600, color: aw === i ? '#3730a3' : '#475569' }}>{w.name}{i === pro.mi ? ' ★' : ''}</span>
-                  <button onClick={e => { e.stopPropagation(); toggleWallVisible(i); }} style={{ width: 18, height: 18, borderRadius: 4, border: '1px solid #e5e7eb', background: visible ? '#ecfdf5' : '#f1f5f9', color: visible ? '#059669' : '#94a3b8', fontSize: 8, cursor: 'pointer', fontFamily: 'inherit', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    {visible ? '◉' : '◯'}
-                  </button>
-                </div>
-                <div style={{ fontSize: 10, color: '#94a3b8', marginTop: 2, display: 'flex', gap: 6 }}>
-                  <span>{lo?.tiles || 0}t</span>
-                  <span>{lo?.waste || 0}%</span>
-                  <span style={{ color: lo?.score >= 80 ? '#059669' : lo?.score >= 60 ? '#d97706' : '#dc2626' }}>{lo?.score || 0}</span>
-                </div>
-              </div>
-            );
-          })}
-          <div style={{ fontSize: 9, color: '#94a3b8', marginTop: 8, padding: '6px 0', borderTop: '1px solid #f1f5f9' }}>
-            <div>Area: {sqft(totalArea)} sf</div>
-            <div>Total: {pro.layouts.reduce((s, l) => s + l.tiles, 0)} tiles</div>
-          </div>
-        </div>
       </div>
 
       {/* ═══ FOOTER ═══ */}
-      <div style={{ borderTop: '1px solid #f1f5f9', padding: '6px 20px', display: 'flex', gap: 6, background: '#fff', flexWrap: 'wrap', alignItems: 'center', flexShrink: 0 }}>
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, padding: '4px 10px', background: '#fff', borderRadius: 6, border: '1px solid #f1f5f9' }}>
-          <span style={{ fontSize: 9, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 0.8, fontWeight: 500 }}>Pattern</span>
-          <span style={{ fontSize: 12, fontWeight: 600, color: '#1e293b' }}>{PATTERNS.find(p => p.id === pat)?.name}</span>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, padding: '4px 10px', background: '#fff', borderRadius: 6, border: '1px solid #f1f5f9' }}>
-          <span style={{ fontSize: 9, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 0.8, fontWeight: 500 }}>Score</span>
-          <span style={{ fontSize: 12, fontWeight: 600, color: pro.avgScore >= 80 ? '#059669' : '#d97706' }}>{pro.avgScore}<span style={{ fontSize: 9, color: '#94a3b8', marginLeft: 1 }}>/100</span></span>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, padding: '4px 10px', background: '#fff', borderRadius: 6, border: '1px solid #f1f5f9' }}>
-          <span style={{ fontSize: 9, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 0.8, fontWeight: 500 }}>Tiles</span>
-          <span style={{ fontSize: 12, fontWeight: 600, color: '#1e293b' }}>{cur?.tiles}<span style={{ fontSize: 9, color: '#94a3b8', marginLeft: 1 }}>pcs</span></span>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, padding: '4px 10px', background: '#fff', borderRadius: 6, border: '1px solid #f1f5f9' }}>
-          <span style={{ fontSize: 9, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 0.8, fontWeight: 500 }}>Waste</span>
-          <span style={{ fontSize: 12, fontWeight: 600, color: +(cur?.waste || 0) > 10 ? '#dc2626' : '#059669' }}>{cur?.waste}<span style={{ fontSize: 9, color: '#94a3b8', marginLeft: 1 }}>%</span></span>
-        </div>
+      <div style={{ borderTop: '1px solid #e5e7eb', padding: '8px 20px', display: 'flex', gap: 8, background: 'rgba(255,255,255,.9)', flexWrap: 'wrap', alignItems: 'center', flexShrink: 0, backdropFilter: 'blur(12px)' }}>
+        <Stat l="Pattern" v={PATTERNS.find(p => p.id === pat)?.name} sm />
+        <Stat l="Score" v={pro.avgScore} u="/100" c={pro.avgScore >= 80 ? '#059669' : '#d97706'} sm />
+        <Stat l="Tiles" v={cur?.tiles} u="pcs" sm />
+        <Stat l="Waste" v={cur?.waste} u="%" c={+(cur?.waste || 0) > 10 ? '#dc2626' : '#059669'} sm />
+        <Stat l="Cost" v={`$${tileCost}`} c="#2563eb" sm />
         {pro.allMeet
-          ? <div style={{ fontSize: 10, color: '#059669', fontWeight: 600, padding: '4px 10px', background: '#ecfdf5', borderRadius: 6, border: '1px solid #bbf7d0' }}>✓ No Slivers</div>
-          : <div style={{ fontSize: 10, color: '#dc2626', fontWeight: 600, padding: '4px 10px', background: '#fef2f2', borderRadius: 6, border: '1px solid #fecaca' }}>⚠ Slivers</div>}
-        {!autoSolve && <div style={{ fontSize: 10, color: '#d97706', fontWeight: 500, padding: '4px 10px', background: '#fffbeb', borderRadius: 6 }}>Manual</div>}
-        <div style={{ marginLeft: 'auto', fontSize: 10, color: '#94a3b8', display: 'flex', gap: 10, alignItems: 'center', fontFamily: "'JetBrains Mono', monospace", fontWeight: 400 }}>
+          ? <div style={{ fontSize: 10, color: '#059669', fontWeight: 600, padding: '5px 12px', background: '#ecfdf5', borderRadius: 8, border: '1px solid #a7f3d0', letterSpacing: 0.3 }}>✓ No Slivers</div>
+          : <div style={{ fontSize: 10, color: '#dc2626', fontWeight: 600, padding: '5px 12px', background: '#fef2f2', borderRadius: 8, border: '1px solid #fecaca', letterSpacing: 0.3 }}>⚠ Slivers</div>}
+        {!autoSolve && <div style={{ fontSize: 10, color: '#d97706', fontWeight: 500, padding: '5px 12px', background: '#fffbeb', borderRadius: 8 }}>Manual</div>}
+        {isPending && <div style={{ fontSize: 10, color: '#94a3b8', padding: '5px 12px' }}>solving…</div>}
+        {walls.length > 1 && <Stat l="All" v={totT} u="t" c="#2563eb" sm />}
+        <div style={{ marginLeft: 'auto', fontSize: 10, color: '#94a3b8', display: 'flex', gap: 12, alignItems: 'center' }}>
           <span>{Math.round(zoom * 100)}%</span>
-          <span>{sqft(totalArea)} sf</span>
+          <span>{sqft(totalArea)}sf</span>
           <span>X:{formatInches(pro.globalXOff)} Y:{formatInches(pro.globalYOff)}</span>
         </div>
       </div>

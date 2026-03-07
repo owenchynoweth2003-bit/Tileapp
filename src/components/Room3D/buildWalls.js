@@ -21,6 +21,7 @@ function paintWallTexture(cv, wall, sec, allTiles, tile, grout, groutColor, maxH
   const drawT = t => {
     if (t.t === 'r') {
       const px = t.x * sc, py = t.y * sc, pw = t.w * sc, ph = t.h * sc;
+<<<<<<< HEAD
       if (tile.img) {
         try { ctx.drawImage(tile.img, px, py, pw - gs, ph - gs); } catch(e) { ctx.fillStyle = t.c; ctx.fillRect(px, py, pw - gs, ph - gs); }
       } else {
@@ -44,11 +45,33 @@ function paintWallTexture(cv, wall, sec, allTiles, tile, grout, groutColor, maxH
           ctx.globalAlpha = 0.03 + sh2 * 0.008; ctx.fillStyle = '#fff';
           ctx.fillRect(px + pw * 0.08, py + ph * 0.08, pw * 0.25, ph * 0.18);
         }
+=======
+      ctx.fillStyle = t.c; ctx.globalAlpha = 0.92;
+      ctx.fillRect(px, py, pw - gs, ph - gs);
+      ctx.globalAlpha = 0.06; ctx.fillStyle = '#fff';
+      ctx.fillRect(px, py, pw - gs, Math.max(1, ph * 0.018));
+      ctx.fillStyle = '#000'; ctx.globalAlpha = 0.06;
+      ctx.fillRect(px, py + ph - gs - 1, pw - gs, 1);
+      ctx.fillStyle = '#fff'; ctx.globalAlpha = 0.02;
+      ctx.fillRect(px, py, 0.8, ph - gs);
+      if (tile.type === 'marble' && pw > 6) {
+        ctx.globalAlpha = 0.04; ctx.strokeStyle = tile.accent; ctx.lineWidth = 0.5;
+        const sd = Math.abs(Math.round(t.x * 7 + t.y * 11)) % 10;
+        ctx.beginPath(); ctx.moveTo(px + sd * 0.4, py + ph * 0.15);
+        ctx.bezierCurveTo(px + pw * 0.3, py + ph * (0.2 + sd * 0.02), px + pw * 0.65, py + ph * (0.5 + sd * 0.01), px + pw - sd, py + ph * 0.75);
+        ctx.stroke();
+      }
+      if (tile.type === 'zellige' && pw > 3) {
+        const sh2 = Math.abs(Math.round(t.x * 3 + t.y * 5)) % 4;
+        ctx.globalAlpha = 0.03 + sh2 * 0.008; ctx.fillStyle = '#fff';
+        ctx.fillRect(px + pw * 0.08, py + ph * 0.08, pw * 0.25, ph * 0.18);
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
       }
       ctx.globalAlpha = 1;
     } else if (t.t === 'rot') {
       const pcx = t.cx * sc, pcy = t.cy * sc, pw = t.w * sc, ph = t.h * sc;
       ctx.save(); ctx.translate(pcx, pcy); ctx.rotate(t.a);
+<<<<<<< HEAD
       if (tile.img) {
         try { ctx.drawImage(tile.img, -pw / 2, -ph / 2, pw - gs, ph - gs); } catch(e) { ctx.fillStyle = t.c; ctx.fillRect(-pw / 2, -ph / 2, pw - gs, ph - gs); }
       } else {
@@ -75,6 +98,19 @@ function paintWallTexture(cv, wall, sec, allTiles, tile, grout, groutColor, maxH
         ctx.fill();
       }
       ctx.globalAlpha = 1;
+=======
+      ctx.fillStyle = t.c; ctx.globalAlpha = 0.9;
+      ctx.fillRect(-pw / 2, -ph / 2, pw - gs, ph - gs);
+      ctx.globalAlpha = 0.05; ctx.fillStyle = '#fff';
+      ctx.fillRect(-pw / 2, -ph / 2, pw - gs, 1.5);
+      ctx.globalAlpha = 1; ctx.restore();
+    } else if (t.t === 'para') {
+      const pts = t.pts.map(p => [p[0] * sc, p[1] * sc]);
+      ctx.fillStyle = t.c; ctx.globalAlpha = 0.9;
+      ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]);
+      for (let k = 1; k < pts.length; k++) ctx.lineTo(pts[k][0], pts[k][1]);
+      ctx.closePath(); ctx.fill(); ctx.globalAlpha = 1;
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
     }
   };
 
@@ -193,6 +229,7 @@ export function buildWalls(group, walls, feats, wrap, activeWallIdx, tile, pat, 
       new THREE.LineBasicMaterial({ color: i === activeWallIdx ? 0x3b82f6 : 0xbbc5d3, linewidth: 2 })
     );
     wallGroup.add(wire);
+<<<<<<< HEAD
     
     const isFloor = w.name?.toLowerCase().includes('floor');
     const isCeiling = w.name?.toLowerCase().includes('ceiling');
@@ -213,6 +250,10 @@ export function buildWalls(group, walls, feats, wrap, activeWallIdx, tile, pat, 
         wallGroup.position.set(0, maxWallH, backW);
       }
     } else if (wrap) {
+=======
+
+    if (wrap) {
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
       if (outside) {
         const w1w = walls[1]?.w || 60, w0w = walls[0]?.w || 36;
         if      (i === 0) { wallGroup.rotation.y = -Math.PI / 2;  wallGroup.position.set(0, 0, 0); }

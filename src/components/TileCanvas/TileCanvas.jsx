@@ -5,7 +5,11 @@ import { FEAT_TYPES } from '../../domain/features.js';
 import { drawTile } from './drawTile.js';
 import { toWallSpace, findDragTarget } from './hitTest.js';
 
+<<<<<<< HEAD
 export default function TileCanvas({ walls, aw, tile, grout, groutColor, pat, feats, CW, CH, onDrag, onDragPt, wrap, zoom, showMeas, pro, isWallVisible }) {
+=======
+export default function TileCanvas({ walls, aw, tile, grout, groutColor, pat, feats, CW, CH, onDrag, onDragPt, wrap, zoom, showMeas, pro }) {
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
   const ref         = useRef(null);
   const dragRef     = useRef(null);
   const rafRef      = useRef(0);
@@ -29,6 +33,7 @@ export default function TileCanvas({ walls, aw, tile, grout, groutColor, pat, fe
     const cv = ref.current; if (!cv) return;
     const ctx = cv.getContext('2d'); if (!ctx) return;
     const dpr = window.devicePixelRatio || 1;
+<<<<<<< HEAD
     const displayW = CW;
     const displayH = CH;
     cv.width  = Math.floor(displayW * dpr);
@@ -38,6 +43,11 @@ export default function TileCanvas({ walls, aw, tile, grout, groutColor, pat, fe
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
+=======
+    cv.width = Math.floor(CW * dpr); cv.height = Math.floor(CH * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.translate(0.5, 0.5); // <--- ADD THIS LINE FOR CRISP LINES
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
 
     const pad = 72, VGAP = wrap && walls.length > 1 ? 10 : 0, tgp = VGAP * Math.max(0, sections.length - 1);
     const baseSc = Math.min((CW - pad * 2 - tgp) / Math.max(1, totalTW), (CH - pad * 2) / maxH);
@@ -58,7 +68,10 @@ export default function TileCanvas({ walls, aw, tile, grout, groutColor, pat, fe
 
     let dxAcc = 0;
     sections.forEach((sec, si) => {
+<<<<<<< HEAD
       const visible = !isWallVisible || isWallVisible(sec.idx);
+=======
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
       const sw2 = sec.w * sc, sh2 = sec.h * sc;
       const secFeats = feats.filter(f => f.wi === sec.idx);
       const minX = sec.isCustom && sec.points?.length > 2 ? Math.min(...sec.points.map(p => p[0])) : 0;
@@ -79,6 +92,7 @@ export default function TileCanvas({ walls, aw, tile, grout, groutColor, pat, fe
       }
       secFeats.forEach(f => { const ft = FEAT_TYPES.find(t => t.id === f.type); if (ft?.isHole) ctx.rect(f.x * sc, f.y * sc, f.w * sc, f.h * sc); });
 
+<<<<<<< HEAD
       ctx.save(); 
       ctx.clip('evenodd');
 
@@ -106,6 +120,9 @@ export default function TileCanvas({ walls, aw, tile, grout, groutColor, pat, fe
         dxAcc += sw2 + (wrap ? VGAP : 0);
         return;
       }
+=======
+      ctx.save(); ctx.clip('evenodd');
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
       ctx.fillStyle = gcol; ctx.globalAlpha = 0.85; ctx.fillRect(minX * sc, minY * sc, (maxX - minX) * sc, (maxY - minY) * sc);
       ctx.fillStyle = sec.active ? '#dde4ed' : '#d0d7e2'; ctx.globalAlpha = 0.3; ctx.fillRect(minX * sc, minY * sc, (maxX - minX) * sc, (maxY - minY) * sc);
       ctx.globalAlpha = 1;
@@ -164,7 +181,11 @@ export default function TileCanvas({ walls, aw, tile, grout, groutColor, pat, fe
           const ok = val >= min;
           const txt = formatInches(val);
           const sym = ok ? '✓' : '✗';
+<<<<<<< HEAD
           ctx.font = '600 10px "SF Mono", "Consolas", monospace';
+=======
+          ctx.font = '600 10px Inter, system-ui, sans-serif';
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
           const tw = ctx.measureText(txt).width;
           const sw = ctx.measureText(sym).width;
           const gap = 3;
@@ -172,23 +193,38 @@ export default function TileCanvas({ walls, aw, tile, grout, groutColor, pat, fe
           const ph = 18, pr = 5;
           let px = align === 'left' ? cx - totalW - 2 : align === 'right' ? cx + 2 : cx - totalW / 2;
           let py = cy - ph / 2;
+<<<<<<< HEAD
           ctx.fillStyle = ok ? 'rgba(255,255,255,0.92)' : 'rgba(254,242,242,0.95)';
           ctx.strokeStyle = ok ? 'rgba(0,0,0,0.08)' : 'rgba(220,38,38,0.25)';
+=======
+          ctx.fillStyle = ok ? 'rgba(239,246,255,.92)' : 'rgba(254,242,242,.92)';
+          ctx.strokeStyle = ok ? 'rgba(147,197,253,.45)' : 'rgba(252,165,165,.45)';
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
           ctx.lineWidth = 0.8;
           drawPill(ctx, px, py, totalW, ph, pr); ctx.fill(); ctx.stroke();
           ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
           ctx.fillStyle = ok ? '#1e40af' : '#b91c1c';
           ctx.fillText(txt, px + 5, cy);
+<<<<<<< HEAD
           ctx.font = '700 9px "SF Mono", "Consolas", monospace';
+=======
+          ctx.font = '700 9px Inter, system-ui, sans-serif';
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
           ctx.fillStyle = ok ? '#059669' : '#dc2626';
           ctx.fillText(sym, px + 5 + tw + gap, cy);
           ctx.textBaseline = 'alphabetic';
         };
 
         if (!isCustSec) {
+<<<<<<< HEAD
           if (lc > 0.01) edgeLabel(lc, mcwV, 0, sh2 * 0.3, 'left');
           if (rc > 0.01) edgeLabel(rc, mcwV, sw2, sh2 * 0.55, 'right');
           if (tc > 0.01) edgeLabel(tc, mchV, sw2 * 0.3, -2, 'center');
+=======
+          if (lc > 0.01) edgeLabel(lc, mcwV, 0, sh2 * 0.25, 'left'); // Staggered Y position
+          if (rc > 0.01) edgeLabel(rc, mcwV, sw2, sh2 * 0.40, 'right'); // Staggered Y position
+          if (tc > 0.01) edgeLabel(tc, mchV, sw2 / 2, -2, 'center');
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
           if (bc > 0.01) edgeLabel(bc, mchV, sw2 / 2, sh2 + 2, 'center');
         } else {
           const bbL = minX * sc, bbR = maxX * sc, bbT = minY * sc, bbB = maxY * sc;
@@ -198,6 +234,7 @@ export default function TileCanvas({ walls, aw, tile, grout, groutColor, pat, fe
           if (bc > 0.01) edgeLabel(bc, mchV, (bbL + bbR) / 2, bbB + 2, 'center');
         }
 
+<<<<<<< HEAD
         // Dimension leader lines
       if (showMeas && !isCustSec) {
         ctx.strokeStyle = 'rgba(0,0,0,0.08)';
@@ -223,6 +260,11 @@ export default function TileCanvas({ walls, aw, tile, grout, groutColor, pat, fe
         if (hasTrueMin && trueMin < Math.min(mcwV, mchV)) {
           const mtxt = `Min ${formatInches(trueMin)} ✗`;
           ctx.font = '600 9px "SF Mono", "Consolas", monospace';
+=======
+        if (hasTrueMin && trueMin < Math.min(mcwV, mchV)) {
+          const mtxt = `Min ${formatInches(trueMin)} ✗`;
+          ctx.font = '600 9px Inter, system-ui, sans-serif';
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
           const mtw = ctx.measureText(mtxt).width;
           const mx2 = sw2 + 4, my2 = 4;
           ctx.fillStyle = 'rgba(254,242,242,.92)';
@@ -284,7 +326,11 @@ export default function TileCanvas({ walls, aw, tile, grout, groutColor, pat, fe
         sec.points.forEach((pt, pi) => {
           ctx.fillStyle = '#2563eb'; ctx.beginPath(); ctx.arc(pt[0] * sc, pt[1] * sc, 5, 0, Math.PI * 2); ctx.fill();
           ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
+<<<<<<< HEAD
           ctx.fillStyle = '#1e40af'; ctx.font = '700 9px "SF Mono", "Consolas", monospace'; ctx.textAlign = 'left';
+=======
+          ctx.fillStyle = '#1e40af'; ctx.font = '700 9px Inter, system-ui, sans-serif'; ctx.textAlign = 'left';
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
           ctx.fillText(pi + 1, pt[0] * sc + 7, pt[1] * sc - 5);
         });
       }
@@ -292,7 +338,11 @@ export default function TileCanvas({ walls, aw, tile, grout, groutColor, pat, fe
       // Dimension labels
       if (showMeas) {
         if (!sec.isCustom || sec.points?.length > 2) {
+<<<<<<< HEAD
           ctx.font = '600 9px "SF Mono", "Consolas", monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+=======
+          ctx.font = '600 9px Inter, system-ui, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
           const wTxt = formatInches(sec.w), wTw = ctx.measureText(wTxt).width;
           ctx.fillStyle = 'rgba(255,255,255,.82)'; drawPill(ctx, sw2/2 - wTw/2 - 4, -28, wTw + 8, 14, 4); ctx.fill();
           ctx.fillStyle = '#334155'; ctx.fillText(wTxt, sw2/2, -21);
@@ -310,13 +360,18 @@ export default function TileCanvas({ walls, aw, tile, grout, groutColor, pat, fe
         const nm = sec.name;
         const secArea = sec.isCustom && sec.points?.length >= 3 ? polyArea(sec.points) : sec.w * sec.h;
         const areaStr = `${sqft(secArea)} sf`;
+<<<<<<< HEAD
         ctx.font = '600 9px "SF Mono", "Consolas", monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+=======
+        ctx.font = '600 9px Inter, system-ui, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
         const nmW = ctx.measureText(`${nm}  ${areaStr}`).width;
         const pillW2 = nmW + 12, pillH2 = 16, pillY2 = sh2 + 22;
         ctx.fillStyle = sec.active ? 'rgba(239,246,255,.88)' : 'rgba(255,255,255,.82)';
         ctx.strokeStyle = sec.active ? 'rgba(147,197,253,.3)' : 'rgba(203,213,225,.3)'; ctx.lineWidth = 0.6;
         drawPill(ctx, sw2/2 - pillW2/2, pillY2, pillW2, pillH2, 4); ctx.fill(); ctx.stroke();
         ctx.fillStyle = sec.active ? '#1e40af' : '#475569';
+<<<<<<< HEAD
         ctx.font = '600 9px "SF Mono", "Consolas", monospace';
         const nmMeas = ctx.measureText(nm).width;
         ctx.font = '500 8px "SF Mono", "Consolas", monospace';
@@ -325,6 +380,16 @@ export default function TileCanvas({ walls, aw, tile, grout, groutColor, pat, fe
         ctx.font = '600 9px "SF Mono", "Consolas", monospace';
         ctx.fillText(nm, sw2/2 - totalLabelW/2 + nmMeas/2, pillY2 + pillH2/2);
         ctx.fillStyle = '#94a3b8'; ctx.font = '500 8px "SF Mono", "Consolas", monospace';
+=======
+        ctx.font = '600 9px Inter, system-ui, sans-serif';
+        const nmMeas = ctx.measureText(nm).width;
+        ctx.font = '500 8px Inter, system-ui, sans-serif';
+        const areaMeas = ctx.measureText(areaStr).width;
+        const totalLabelW = nmMeas + 6 + areaMeas;
+        ctx.font = '600 9px Inter, system-ui, sans-serif';
+        ctx.fillText(nm, sw2/2 - totalLabelW/2 + nmMeas/2, pillY2 + pillH2/2);
+        ctx.fillStyle = '#94a3b8'; ctx.font = '500 8px Inter, system-ui, sans-serif';
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
         ctx.fillText(areaStr, sw2/2 + totalLabelW/2 - areaMeas/2, pillY2 + pillH2/2);
         ctx.textBaseline = 'alphabetic';
       }
@@ -334,7 +399,11 @@ export default function TileCanvas({ walls, aw, tile, grout, groutColor, pat, fe
       if (si > 0 && wrap) {
         ctx.save(); ctx.strokeStyle = 'rgba(5,150,105,.2)'; ctx.lineWidth = 1; ctx.setLineDash([3, 3]);
         ctx.beginPath(); ctx.moveTo(dxAcc - VGAP / 2, yOffset); ctx.lineTo(dxAcc - VGAP / 2, yOffset + sec.h * sc); ctx.stroke(); ctx.setLineDash([]);
+<<<<<<< HEAD
         ctx.fillStyle = 'rgba(5,150,105,.4)'; ctx.font = '600 7px "SF Mono", "Consolas", monospace'; ctx.textAlign = 'center';
+=======
+        ctx.fillStyle = 'rgba(5,150,105,.4)'; ctx.font = '600 7px Inter, system-ui, sans-serif'; ctx.textAlign = 'center';
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
         ctx.fillText('⟨', dxAcc - VGAP / 2, yOffset - 3);
         ctx.restore();
       }
@@ -359,12 +428,17 @@ export default function TileCanvas({ walls, aw, tile, grout, groutColor, pat, fe
         ctx.fillStyle = col + '0c'; ctx.fillRect(fx, fy, fw, fh);
         ctx.strokeStyle = col + '44'; ctx.lineWidth = 0.8; ctx.setLineDash([4, 3]); ctx.strokeRect(fx, fy, fw, fh); ctx.setLineDash([]);
       }
+<<<<<<< HEAD
       ctx.font = '500 8px "SF Mono", "Consolas", monospace'; ctx.textAlign = 'left';
+=======
+      ctx.font = '500 8px Inter, system-ui, sans-serif'; ctx.textAlign = 'left';
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
       const ftLabel = `${ft?.icon || ''} ${f.name}${f.iNum > 1 ? ' #' + f.iNum : ''}`;
       ctx.fillStyle = col; ctx.globalAlpha = 0.7;
       ctx.fillText(ftLabel, fx + 3, fy > 12 ? fy - 4 : fy + 10);
       ctx.globalAlpha = 1;
     });
+<<<<<<< HEAD
     // Tile size reference
     if (showMeas) {
       const refW = tile.w * sc * zoom;
@@ -386,6 +460,8 @@ export default function TileCanvas({ walls, aw, tile, grout, groutColor, pat, fe
         ctx.globalAlpha = 1;
       }
     }
+=======
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
     ctx.restore();
   }, [CW, CH, allTiles, walls.length, wrap, sections, totalTW, maxH, tile, grout, groutColor, feats, zoom, showMeas, pro]);
 
@@ -426,6 +502,10 @@ export default function TileCanvas({ walls, aw, tile, grout, groutColor, pat, fe
 
   return (
     <canvas ref={ref} onMouseDown={onDown} onMouseMove={onMove} onMouseUp={onUp} onMouseLeave={onUp}
+<<<<<<< HEAD
       style={{ width: CW, height: CH, display: 'block', borderRadius: 12, cursor: 'crosshair', border: '1px solid #e2e8f0', boxShadow: '0 1px 4px rgba(0,0,0,0.04)', background: '#f8f9fb' }} />
+=======
+      style={{ width: '100%', height: CH, display: 'block', borderRadius: 10, cursor: 'crosshair', border: '1px solid #d1d5db', boxShadow: '0 2px 8px rgba(0,0,0,.05)' }} />
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
   );
 }

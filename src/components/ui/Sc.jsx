@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState } from 'react';
 
 export const Sc = ({ title, children, color = '#94a3b8', defaultOpen = true }) => {
@@ -13,3 +14,15 @@ export const Sc = ({ title, children, color = '#94a3b8', defaultOpen = true }) =
     </div>
   );
 };
+=======
+import React from 'react';
+
+export const Sc = ({ title, children, color = '#94a3b8' }) => (
+  <div style={{ marginBottom: 20 }}>
+    <div style={{ fontSize: 10, color: '#94a3b8', letterSpacing: 1.5, marginBottom: 10, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8, textTransform: 'uppercase' }}>
+      <div style={{ width: 2, height: 14, background: color, borderRadius: 1, opacity: 0.4 }} />{title}
+    </div>
+    {children}
+  </div>
+);
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d

@@ -97,7 +97,10 @@ function edgeGridCrossingsX(p1, p2, wallX, gxo, cW, cH, gyo, wallY, pat) {
     let shift = 0;
     if (pat === 'offset_h') shift = (((row % 2) + 2) % 2) * cW / 2;
     else if (pat === 'third_offset') shift = (((row % 3) + 3) % 3) * (cW / 3);
+<<<<<<< HEAD
     else if (pat === 'offset_v') shift = 0;
+=======
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
     const rowYbot = row * cH - wallY - gyo;
     const rowYtop = (row + 1) * cH - wallY - gyo;
     const effYlo = Math.max(yLo, rowYbot);
@@ -303,7 +306,10 @@ export function exactCutsY(pY, cellW, cellH, pat, gxo, gyo, wallX, wallY, wall) 
     const col = Math.floor((x + wallX + gxo) / cW);
     let shift = 0;
     if (pat === 'offset_v') shift = (((col % 2) + 2) % 2) * cH / 2;
+<<<<<<< HEAD
     else if (pat === 'offset_h') shift = 0;
+=======
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
 
     const segs = isCust ? getSegsAtX(x) : pY.find(p => Math.abs(p.x - x) < 0.01)?.segs || [];
 
@@ -389,7 +395,11 @@ export function computeCutsFromTiles(genTiles, wall, wx0, wy0, isCust, maxTileDi
   const wx1 = wx0 + ww, wy1 = wy0 + wh;
   let minL = Infinity, minR = Infinity, minT = Infinity, minB = Infinity;
   let minPiece = Infinity, minPieceY = 0, minPieceSide = '';
+<<<<<<< HEAD
   const step = 0.125;
+=======
+  const step = 0.25;
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
 
   const pad = maxTileDim * 2;
   const nearTiles = genTiles.filter(t => {
@@ -405,7 +415,11 @@ export function computeCutsFromTiles(genTiles, wall, wx0, wy0, isCust, maxTileDi
 
       if (overlapY && bb[0] < wx0 - 0.005 && bb[2] > wx0 + 0.005) {
         const yLo = Math.max(bb[1], wy0), yHi = Math.min(bb[3], wy1);
+<<<<<<< HEAD
         for (let y = yLo + step; y < yHi; y += step) {
+=======
+        for (let y = yLo + step; y < yHi; y += step * 2) {
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
           const ext = tileXAtY(t, y);
           if (!ext) continue;
           const [tx0, tx1] = ext;
@@ -420,7 +434,11 @@ export function computeCutsFromTiles(genTiles, wall, wx0, wy0, isCust, maxTileDi
       }
       if (overlapY && bb[0] < wx1 - 0.005 && bb[2] > wx1 + 0.005) {
         const yLo = Math.max(bb[1], wy0), yHi = Math.min(bb[3], wy1);
+<<<<<<< HEAD
         for (let y = yLo + step; y < yHi; y += step) {
+=======
+        for (let y = yLo + step; y < yHi; y += step * 2) {
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
           const ext = tileXAtY(t, y);
           if (!ext) continue;
           const [tx0, tx1] = ext;
@@ -435,7 +453,11 @@ export function computeCutsFromTiles(genTiles, wall, wx0, wy0, isCust, maxTileDi
       }
       if (overlapX && bb[1] < wy0 - 0.005 && bb[3] > wy0 + 0.005) {
         const xLo = Math.max(bb[0], wx0), xHi = Math.min(bb[2], wx1);
+<<<<<<< HEAD
         for (let x = xLo + step; x < xHi; x += step) {
+=======
+        for (let x = xLo + step; x < xHi; x += step * 2) {
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
           const ext = tileYAtX(t, x);
           if (!ext) continue;
           const [ty0, ty1] = ext;
@@ -447,7 +469,11 @@ export function computeCutsFromTiles(genTiles, wall, wx0, wy0, isCust, maxTileDi
       }
       if (overlapX && bb[1] < wy1 - 0.005 && bb[3] > wy1 + 0.005) {
         const xLo = Math.max(bb[0], wx0), xHi = Math.min(bb[2], wx1);
+<<<<<<< HEAD
         for (let x = xLo + step; x < xHi; x += step) {
+=======
+        for (let x = xLo + step; x < xHi; x += step * 2) {
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
           const ext = tileYAtX(t, x);
           if (!ext) continue;
           const [ty0, ty1] = ext;
@@ -535,12 +561,15 @@ export function computeCutsFromTiles(genTiles, wall, wx0, wy0, isCust, maxTileDi
       }
     }
   }
+<<<<<<< HEAD
 const groutThreshold = 0.06;
   if (minL > 0 && minL < groutThreshold) minL = Infinity;
   if (minR > 0 && minR < groutThreshold) minR = Infinity;
   if (minT > 0 && minT < groutThreshold) minT = Infinity;
   if (minB > 0 && minB < groutThreshold) minB = Infinity;
   if (minPiece > 0 && minPiece < groutThreshold) minPiece = Infinity;
+=======
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
 
   return {
     lc: minL === Infinity ? 0 : minL, rc: minR === Infinity ? 0 : minR,

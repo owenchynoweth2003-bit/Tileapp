@@ -34,6 +34,7 @@ export default function TileStep({
             <label style={{ ...S.b, background: '#fff', border: '1px dashed #cbd5e1', color: '#475569', boxShadow: 'none', textAlign: 'center', cursor: 'pointer', display: 'block', padding: '12px' }}>
               {tile.img ? '✓ Custom Tile Uploaded (Click to change)' : '+ Upload Tile Image (JPG/PNG)'}
               <input type="file" accept="image/png, image/jpeg, image/jpg" style={{ display: 'none' }} onChange={e => {
+<<<<<<< HEAD
   const file = e.target.files?.[0];
   if (!file) return;
   const reader = new FileReader();
@@ -61,6 +62,22 @@ export default function TileStep({
   reader.readAsDataURL(file);
   e.target.value = '';
 }} />
+=======
+                const file = e.target.files?.[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = ev => {
+                  const img = new Image();
+                  img.onload = () => {
+                    setTile(t => ({ ...t, img: img, id: -1, name: 'Custom Upload', type: 'custom' }));
+                    clearOffsets();
+                  };
+                  img.src = ev.target.result;
+                };
+                reader.readAsDataURL(file);
+                e.target.value = '';
+              }} />
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
             </label>
             {tile.img && (
               <button onClick={() => setTile(t => ({ ...t, img: null, name: 'Custom Tile' }))} style={{ fontSize: 10, color: '#dc2626', background: 'none', border: 'none', cursor: 'pointer', marginTop: 4, width: '100%', textAlign: 'center' }}>Remove Image</button>
@@ -78,7 +95,14 @@ export default function TileStep({
             </div>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
+<<<<<<< HEAD
             
+=======
+            <div>
+              <label style={S.l}>Price $/tile</label>
+              <input type="number" value={tile.price || ''} onChange={e => setTile(t => ({ ...t, price: nOr(e.target.value, 5), id: -1 }))} step={0.25} min={0} style={S.i} />
+            </div>
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
             <div>
               <label style={S.l}>Color</label>
               <input type="color" value={tile.color || '#cccccc'} onChange={e => setTile(t => ({ ...t, color: e.target.value, accent: e.target.value, id: -1 }))} style={{ ...S.i, padding: 2, height: 34, cursor: 'pointer' }} disabled={!!tile.img} />

@@ -9,9 +9,13 @@ export default function LayoutStep({
   walls, aw, setAw, pat, setPat, wrap, setWrap,
   mcw, setMcw, mch, setMch,
   autoSolve, setAutoSolve, manXOff, setManXOff, manYOff, setManYOff,
+<<<<<<< HEAD
   zoom, setZoom, pro, ranked, rankSnapshot, clearOffsets, setStep,
   usePerWallPat, setUsePerWallPat, wallPatterns, setWallPattern,
   S, Sp
+=======
+  zoom, setZoom, pro, ranked, rankSnapshot, clearOffsets, setStep, S, Sp
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
 }) {
   return (
     <>
@@ -29,6 +33,7 @@ export default function LayoutStep({
             )}
           </div>
         )}
+<<<<<<< HEAD
 
         {walls.length > 1 && (
           <div style={{ ...S.s, borderTop: '1px solid #f1f5f9', paddingTop: 10 }}>
@@ -54,6 +59,8 @@ export default function LayoutStep({
             )}
           </div>
         )}
+=======
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
         <div style={S.s}>
           <label style={S.l}>Best Fit {rankSnapshot ? '' : '(enter Layout tab to rank)'}</label>
           {ranked.slice(0, 3).map((l, i) => {
@@ -88,12 +95,15 @@ export default function LayoutStep({
 
       <Sc title="Min Cut" color="#f87171">
         <label style={S.l}>Sides: {formatInches(mcw)}</label>
+<<<<<<< HEAD
         
         <div style={{ display: 'flex', gap: 3, marginBottom: 4 }}>
           {[{ v: 0.5, l: '1/2"' }, { v: 1, l: '1"' }, { v: 2, l: '2"' }, { v: 3, l: '3"' }].map(x => (
             <button key={x.v} onClick={() => { setMcw(x.v); setMch(x.v); setManXOff(null); setManYOff(null); }} style={{ ...Sp(mcw === x.v && mch === x.v), flex: 1, textAlign: 'center', fontSize: 9, padding: '3px 4px' }}>{x.l}</button>
           ))}
         </div>
+=======
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
         <input type="range" min={0} max={8} step={0.25} value={mcw} onChange={e => { setMcw(nOr(e.target.value, 2)); setManXOff(null); }} style={{ width: '100%' }} />
         <label style={{ ...S.l, marginTop: 6 }}>Top/Btm: {formatInches(mch)}</label>
         <input type="range" min={0} max={8} step={0.25} value={mch} onChange={e => { setMch(nOr(e.target.value, 2)); setManYOff(null); }} style={{ width: '100%' }} />

@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { WALLPRESETS } from '../domain/walls.js';
 
 export function useSpaceConfig() {
+<<<<<<< HEAD
   const [wallType, setWallType]         = useState('single');
   const [walls, setWalls]               = useState(WALLPRESETS[0].p.map(p => ({ ...p })));
   const [aw, setAw]                     = useState(0);
@@ -36,3 +37,12 @@ export function useSpaceConfig() {
     wallConnection, setWallConnection,
   };
 }
+=======
+  const [wallType, setWallType] = useState('single');
+  const [walls, setWalls]       = useState(WALLPRESETS[0].p.map(p => ({ ...p })));
+  const [aw, setAw]             = useState(0);
+  const [feats, setFeats]       = useState([]);
+
+  return { wallType, setWallType, walls, setWalls, aw, setAw, feats, setFeats };
+}
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d

@@ -6,7 +6,11 @@ import { getWallXProfile, getWallYProfile } from './profiles.js';
 import { solveAllX, solveAllY, exactCutsX, exactCutsY, computeCutsFromTiles } from './cuts.js';
 import { generateTiles } from './generateTiles.js';
 
+<<<<<<< HEAD
 export function solvePro(rawWalls, tile, pat, grout, mcw, mch, manualXOff, manualYOff, feats = [], connectionMode = 'independent') {
+=======
+export function solvePro(rawWalls, tile, pat, grout, mcw, mch, manualXOff, manualYOff, feats = []) {
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
   const walls = rawWalls.map(w => ({ ...w, w: posOr(w.w, 1), h: posOr(w.h, 1) }));
   const tW = posOr(tile?.w, 12), tH = posOr(tile?.h, 24), g = Math.max(0, nOr(grout, 0.125));
   const short = Math.min(tW, tH), long_ = Math.max(tW, tH);
@@ -29,6 +33,7 @@ export function solvePro(rawWalls, tile, pat, grout, mcw, mch, manualXOff, manua
     'crosshatch','pinwheel','corridor','versailles','parquet'].includes(pat);
 
   let masterIdx = 0;
+<<<<<<< HEAD
   if (connectionMode === 'continuous') {
     let mw = 0;
     walls.forEach((w, i) => { if (w.w > mw) { mw = w.w; masterIdx = i; } });
@@ -36,6 +41,10 @@ export function solvePro(rawWalls, tile, pat, grout, mcw, mch, manualXOff, manua
     if (walls.length >= 3) masterIdx = 1;
     else { let mw = 0; walls.forEach((w, i) => { if (w.w > mw) { mw = w.w; masterIdx = i; } }); }
   }
+=======
+  if (walls.length >= 3) masterIdx = 1;
+  else { let mw = 0; walls.forEach((w, i) => { if (w.w > mw) { mw = w.w; masterIdx = i; } }); }
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
 
   const cutoutsByWall = i => feats.filter(f => f.wi === i && f.type === 'cutout');
   const profilesX = walls.map((w, i) => getWallXProfile(w, cutoutsByWall(i)));
@@ -43,6 +52,7 @@ export function solvePro(rawWalls, tile, pat, grout, mcw, mch, manualXOff, manua
   const maxH    = Math.max(1, ...walls.map(w => posOr(w.h, 1)));
   const yStarts = walls.map(w => maxH - posOr(w.h, 1));
 
+<<<<<<< HEAD
   let globalXOff;
   if (manualXOff != null) {
     globalXOff = manualXOff;
@@ -56,6 +66,14 @@ export function solvePro(rawWalls, tile, pat, grout, mcw, mch, manualXOff, manua
   } else {
     globalYOff = solveAllY(walls, profilesY, cellH, cellW, mch, yShifts, yStarts).globalYOff;
   }
+=======
+  const globalXOff = (manualXOff != null)
+    ? manualXOff
+    : solveAllX(walls, profilesX, cellW, cellH, mcw, masterIdx, xShifts, yStarts).globalXOff;
+  const globalYOff = (manualYOff != null)
+    ? manualYOff
+    : solveAllY(walls, profilesY, cellH, cellW, mch, yShifts, yStarts).globalYOff;
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
 
   const starts = []; let acc2 = 0;
   for (const w of walls) { starts.push(acc2); acc2 += w.w; }
@@ -113,7 +131,11 @@ export function solvePro(rawWalls, tile, pat, grout, mcw, mch, manualXOff, manua
     const tot = Math.max(1, tC * tR), full = Math.max(0, x.fc * y.fc), cuts = tot - full;
     let wm, need;
     if (isComplex) {
+<<<<<<< HEAD
       wm = ['diagonal','herringbone_diag','chevron'].includes(pat) ? 1.18 : ['herringbone','herringbone_str'].includes(pat) ? 1.15 : 1.12;
+=======
+      wm = ['diagonal','herringbone_diag','chevron'].includes(pat) ? 1.22 : ['herringbone','herringbone_str'].includes(pat) ? 1.18 : 1.15;
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
       need = Math.ceil((w.w * w.h / Math.max(1e-6, tW * tH)) * wm);
     } else {
       wm = 1 + Math.max(5, Math.min(15, (cuts / Math.max(tot, 1)) * 100 + 3)) / 100;
@@ -143,5 +165,9 @@ export function solvePro(rawWalls, tile, pat, grout, mcw, mch, manualXOff, manua
   }
   notes.push(`Offset: ${formatInches(globalXOff)} X, ${formatInches(globalYOff)} Y`);
   const avgScore = Math.round(layouts.reduce((s, l) => s + l.score, 0) / layouts.length);
+<<<<<<< HEAD
   return { layouts, xPW, yPW, globalXOff, globalYOff, mi: masterIdx, notes, avgScore, allMeet, isC: isComplex, mcw, mch, cellW, cellH, connectionMode };
+=======
+  return { layouts, xPW, yPW, globalXOff, globalYOff, mi: masterIdx, notes, avgScore, allMeet, isC: isComplex, mcw, mch, cellW, cellH };
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
 }

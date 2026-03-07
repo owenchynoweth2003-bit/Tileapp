@@ -10,8 +10,12 @@ export default function SpaceStep({
   updWall, toggleCustom, rotateWall, applyShape, duplicateWall, addWall, deleteWall, moveWall,
   updWallPt, addWallPt, remWallPt,
   feats, addFeat, remFeat, updFeat, snapF,
+<<<<<<< HEAD
   setStep, wallVisible, toggleWallVisible, isWallVisible,
   wallConnection, setWallConnection, wrap, setWrap, S, Sp
+=======
+  setStep, S, Sp
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
 }) {
   return (
     <>
@@ -42,6 +46,7 @@ export default function SpaceStep({
             </button>
           </div>
         </div>
+<<<<<<< HEAD
         
         {walls.length > 1 && (
         <Sc title="Wall Connection" color="#6366f1">
@@ -90,6 +95,15 @@ export default function SpaceStep({
               if (walls.length === 1) setWrap(true);
             }} style={{ ...Sp(false), fontSize: 10, padding: '4px 8px' }}>+ Ceiling</button>
           </div>
+=======
+        <div style={S.s}>
+          <label style={S.l}>Walls</label>
+          <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+            {walls.map((w, i) => <button key={i} onClick={() => setAw(i)} style={{ ...Sp(aw === i), fontSize: 11, padding: '6px 10px' }}>{w.name}{i === pro.mi ? ' ★' : ''}</button>)}
+            <button onClick={addWall} style={{ ...Sp(false), fontSize: 11, padding: '6px 10px', border: '1px dashed rgba(255,255,255,.12)' }}>+ Add</button>
+          </div>
+        </div>
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
         <div style={{ background: '#fff', borderRadius: 12, padding: 12, border: '1px solid #e5e7eb', boxShadow: '0 1px 3px rgba(0,0,0,.04)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>

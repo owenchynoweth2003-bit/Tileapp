@@ -61,7 +61,11 @@ export function generateTiles(totalW, totalH, tile, patId, grout, gxo, gyo) {
     const sx = long_ + g, sy = short + g;
     const angle = patId === 'herringbone_diag' ? Math.PI / 4 : patId === 'herringbone_str' ? -Math.PI / 4 : 0;
     const twH = totalW + mx, tH2 = totalH + my, cxR = twH / 2, cyR = tH2 / 2;
+<<<<<<< HEAD
     const diag = Math.sqrt(twH * twH + tH2 * tH2), span = diag / 2 + Math.max(sx, sy) * 4;
+=======
+    const diag = Math.sqrt(twH * twH + tH2 * tH2), span = diag / 2 + Math.max(sx, sy) * 3;
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
     const aC = (cxR + cyR) / (2 * sx), bC = (cxR - cyR) / (2 * sy), aR = span / sx, bR = span / sy;
     const cos = Math.cos(angle), sin = Math.sin(angle);
     const emit = (x, y, w, h) => {
@@ -77,7 +81,11 @@ export function generateTiles(totalW, totalH, tile, patId, grout, gxo, gyo) {
       }
   } else if (patId === 'chevron') {
     const cw2 = long_ * Math.SQRT1_2, vh = short * Math.SQRT2, gv = g * Math.SQRT2, colW = cw2 + g, rowH = vh;
+<<<<<<< HEAD
     const nC = Math.ceil((totalW + mx) / colW) + 3, nR = Math.ceil((totalH + my) / rowH) + Math.ceil(cw2 / rowH) + 3;
+=======
+    const nC = Math.ceil((totalW + mx) / colW) + 2, nR = Math.ceil((totalH + my) / rowH) + Math.ceil(cw2 / rowH) + 2;
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
     for (let c = -2; c <= nC; c++) {
       const x = c * colW;
       for (let r = -Math.ceil(cw2 / rowH) - 2; r <= nR; r++) {
@@ -87,7 +95,11 @@ export function generateTiles(totalW, totalH, tile, patId, grout, gxo, gyo) {
       }
     }
   } else if (patId === 'diagonal') {
+<<<<<<< HEAD
     const c45 = Math.SQRT1_2, mxN = Math.ceil(Math.max(totalW + mx, totalH + my) * 1.8 / Math.max(tW, tH));
+=======
+    const c45 = Math.SQRT1_2, mxN = Math.ceil(Math.max(totalW + mx, totalH + my) * 1.5 / Math.max(tW, tH));
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
     const cx2 = (totalW + mx) / 2, cy2 = (totalH + my) / 2;
     for (let r = -mxN; r <= mxN; r++)
       for (let c = -mxN; c <= mxN; c++)

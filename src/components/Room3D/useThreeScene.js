@@ -35,7 +35,11 @@ export function useThreeScene(mountRef, hudRef) {
     camera.position.set(0, 100, 300);
     scene.add(camera);
 
+<<<<<<< HEAD
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, preserveDrawingBuffer: true });
+=======
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
     renderer.setSize(width, height);
     renderer.outputEncoding = THREE.sRGBEncoding;
     mountRef.current.appendChild(renderer.domElement);

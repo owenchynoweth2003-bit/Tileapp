@@ -53,6 +53,7 @@ export function paraXAtY(t, y) {
   return ints.length >= 2 ? [Math.min(...ints), Math.max(...ints)] : null;
 }
 
+<<<<<<< HEAD
 export function rotatedPieceWidth(t, wallEdgeX, side) {
   if (t.t === 'r') {
     if (side === 'left') return t.x + t.w - wallEdgeX;
@@ -82,6 +83,8 @@ export function rotatedPieceWidth(t, wallEdgeX, side) {
   }
   return 0;
 }
+=======
+>>>>>>> 1f1fec14fe1d31287d660e823928e29b1f4fc30d
 // Get Y extent of parallelogram at scanline x
 export function paraYAtX(t, x) {
   const ints = [];
